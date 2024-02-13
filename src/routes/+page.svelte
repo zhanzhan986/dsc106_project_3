@@ -7,15 +7,48 @@
     let year, minYear, maxYear;
     const colorScale = d3.scaleSequential(d3.interpolateTurbo);
     let tooltipContent = '', tooltipX = 0, tooltipY = 0, showTooltip = false;
-  
+    
+    const renameMap = {
+        // Example: 'CSV Name': 'GeoJSON Name',
+        'United States':'United States of America',
+        "United States Territories (Shift)" : 'United States of America',
+        "United States Virgin Islands" : "U.S. Virgin Is.",
+        "Western Sahara" : 'W. Sahara',
+        'Democratic Republic of Congo': 'Dem. Rep. Congo',
+        'Central African Republic': 'Central African Rep.',
+        "Cote d'Ivoire": "Côte d'Ivoire",
+        "Cape Verde": "Cabo Verde",
+        "Cook Islands": "Cook Is.",
+        'Equatorial Guinea': 'Eq. Guinea',
+        'South Sudan': 'S. Sudan',
+        'Dominican Republic':'Dominican Rep.',
+        'Solomon Islands': 'Solomon Is.',
+        'Cayman Islands': 'Cayman Is.',
+        'East Timor': 'Timor-Leste',
+        'British Virgin Islands': 'British Virgin Is.',
+        'Bosnia and Herzegovina':'Bosnia and Herz.',
+        'Falkland Islands':'Falkland Is.',
+        'Saint Pierre and Miquelon': 'St. Pierre and Miquelon',
+        'Sao Tome and Principe': 'São Tomé and Principe',
+        'Saint Kitts and Nevis': "St. Kitts and Nevis",
+        'Saint Vincent and the Grenadines':'St. Vin. and Gren.',
+        'Northern Mariana Islands' :'N. Mariana Is.'
+        };
+
     onMount(async () => {
       const energyRes = await fetch('energy.csv');
       const csvText = await energyRes.text();
-      energyData = d3.csvParse(csvText, d3.autoType)
+      energyData = d3.csvParse(csvText, d => {
+            // Use the rename map to correct country names
+            if (renameMap[d.country]) {
+            d.country = renameMap[d.country];
+            }
+            return d3.autoType(d);
+        })
                       .filter(d => d.primary_energy_consumption > 0);
   
       minYear = d3.min(energyData, d => d.year);
-      maxYear = d3.max(energyData, d => d.year);
+      maxYear = d3.max(energyData, d => d.year)-1;
       year = minYear; // Initialize with the earliest year
   
       const logDomain = d3.extent(energyData, d => Math.log(d.primary_energy_consumption + 1));
