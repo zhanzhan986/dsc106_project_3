@@ -54,7 +54,7 @@
       const logDomain = d3.extent(energyData, d => Math.log(d.primary_energy_consumption + 1));
       colorScale.domain(logDomain);
   
-      const mapRes = await fetch('/world.geojson');
+      const mapRes = await fetch('world.geojson');
       mapData = await mapRes.json();
   
       drawMap();
