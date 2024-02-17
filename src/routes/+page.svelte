@@ -4,11 +4,17 @@
     import { geoNaturalEarth1, geoPath } from 'd3-geo';
 
     let energyData = [], mapData;
-    let year, minYear, maxYear;
+    let year;
+    let minYear = 1965;
+    let maxYear = 2021;
     const colorScale = d3.scaleSequential().interpolator(d3.interpolateRgb("#f0ee99", "#eb4034"));
     let tooltipContent = '', tooltipX = 0, tooltipY = 0, showTooltip = false;
     let searchCountry = '', searchYear = ''; // Variables for search inputs
     let searchResult = ''; // For displaying search results on the page
+    let countrySuggestions = [];
+
+    // Assuming you have a list of all country names in your data
+    let allCountries = []; // This will be populated with unique country names
     
     const renameMap = {
         // Example: 'CSV Name': 'GeoJSON Name',
@@ -62,7 +68,19 @@
       mapData = await mapRes.json();
   
       drawMap();
+
+      // After fetching and processing your data, populate allCountries
+      allCountries = Array.from(new Set(energyData.map(d => d.country))).sort();
     });
+
+    // Watch for changes in searchCountry and update suggestions
+    $: if (searchCountry) {
+      countrySuggestions = allCountries.filter(country => 
+        country.toLowerCase().includes(searchCountry.toLowerCase())
+      ).slice(0, 5); // Limit the number of suggestions
+    } else {
+      countrySuggestions = [];
+    }
 
     function drawLegend() {
       const svg = d3.select('#map');
@@ -150,21 +168,54 @@
     function updateYear(newYear) {
       year = newYear;
       drawMap(); // Redraw map with the newly selected year's data
+      if (searchCountry) highlightCountry(searchCountry); // Re-highlight if a country was searched
     }
 
     function searchData() {
       if (!searchCountry || !searchYear) {
-        searchResult = 'Please enter both country and year.';
-        return;
+          searchResult = 'Please enter both country and year.';
+          return;
       }
 
-      const filteredData = energyData.filter(d => d.country === searchCountry && d.year === parseInt(searchYear, 10));
-      if (filteredData.length > 0) {
-        const dataForCountryYear = filteredData[0]; // Assuming unique country-year pairs
-        searchResult = `${searchCountry} in ${searchYear}: ${dataForCountryYear.primary_energy_consumption} Terawatt-Hours`;
-      } else {
-        searchResult = `${searchCountry} in ${searchYear}: No data`;
+      // Validate the year is within the allowed range
+      const yearInt = parseInt(searchYear, 10);
+      if (yearInt < 1965 || yearInt > 2021) {
+          searchResult = 'Year must be between 1965 and 2021.';
+          return;
       }
+
+      const filteredData = energyData.filter(d => d.country === searchCountry && d.year === yearInt);
+      if (filteredData.length > 0) {
+          // Data exists, update the year and the map visualization
+          year = yearInt; // Update the year
+          searchResult = `${searchCountry} in ${searchYear}: ${filteredData[0].primary_energy_consumption} Terawatt-Hours`;
+
+          // Trigger map update for the new year
+          updateYear(year);
+
+          // Highlight the searched country
+          highlightCountry(searchCountry);
+      } else {
+          searchResult = `${searchCountry} in ${searchYear}: No data`;
+      }
+    }
+
+    function highlightCountry(countryName) {
+      // First, reset any previous highlights by removing the stroke from all countries
+      d3.select('#map').selectAll('path')
+        .style('stroke', null) // Remove stroke from all paths
+        .style('stroke-width', null) // Reset stroke width to default
+
+      // Apply a stroke to the searched country for highlighting
+      d3.select('#map').selectAll('path')
+        .filter(d => d.properties.name === countryName)
+        .style('stroke', 'blue') // Use a noticeable color for the stroke
+        .style('stroke-width', 3); // Adjust the stroke width for visibility
+   }
+
+   function selectCountry(country) {
+    searchCountry = country; // Update the search input with the selected country
+    countrySuggestions = []; // Clear suggestions
     }
   </script>
   
@@ -214,13 +265,37 @@
       font-size: 16px;
       color: #333;
     }
+    .autocomplete-suggestions {
+    /* Style for autocomplete suggestions */
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    position: absolute;
+    background-color: white;
+    border: 1px solid #ddd;
+    z-index: 100;
+  }
+  .autocomplete-suggestions li {
+    padding: 5px;
+    cursor: pointer;
+  }
+  .autocomplete-suggestions li:hover {
+    background-color: #f0f0f0;
+  }
 </style>
   
 <h1>World Primary Energy Consumption by Year</h1>
 <div class="search-container">
   <input type="text" placeholder="Country" bind:value={searchCountry}>
-  <input type="number" placeholder="Year" bind:value={searchYear} min={minYear} max={maxYear}>
+  <input type="number" placeholder="Year" bind:value={searchYear} min="1965" max="2021">
   <button on:click={searchData}>Search</button>
+  {#if countrySuggestions.length > 0}
+    <ul class="autocomplete-suggestions">
+      {#each countrySuggestions as suggestion}
+        <li on:click={() => selectCountry(suggestion)}>{suggestion}</li>
+      {/each}
+    </ul>
+  {/if}
 </div>
 <!-- Search results are now directly under the search bar -->
 <div class="search-results">{searchResult}</div>
