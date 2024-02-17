@@ -288,7 +288,7 @@
   }
   .slider-container {
       position: absolute;
-      top: 90px;
+      top: 110px;
       right: 20px;
       width: 400px;
     }
@@ -309,6 +309,7 @@
     color: #333;
   }
   .autocomplete-suggestions {
+    position: absolute;
     width: calc(100% - 80px); /* Set width relative to the country input field (adjust the value according to your layout) */
     background-color: #e7f0fa; /* Light blue background */
     border-radius: 5px; /* Rounded corners */
