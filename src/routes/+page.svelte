@@ -177,14 +177,16 @@
           return;
       }
 
-      // Validate the year is within the allowed range
       const yearInt = parseInt(searchYear, 10);
       if (yearInt < 1965 || yearInt > 2021) {
           searchResult = 'Year must be between 1965 and 2021.';
           return;
       }
 
-      const filteredData = energyData.filter(d => d.country === searchCountry && d.year === yearInt);
+      const filteredData = energyData.filter(d => 
+        d.country.toLowerCase() === searchCountry.toLowerCase() && d.year === parseInt(searchYear, 10)
+      );
+      
       if (filteredData.length > 0) {
           // Data exists, update the year and the map visualization
           year = yearInt; // Update the year
@@ -198,24 +200,48 @@
       } else {
           searchResult = `${searchCountry} in ${searchYear}: No data`;
       }
+
+      // Clear the countrySuggestions to hide the list of hints
+      countrySuggestions = [];
     }
 
     function highlightCountry(countryName) {
-      // First, reset any previous highlights by removing the stroke from all countries
+      // Normalize the search input to lowercase
+      const searchNameLower = countryName.toLowerCase();
+
+      // Reset any previous highlights
       d3.select('#map').selectAll('path')
-        .style('stroke', null) // Remove stroke from all paths
-        .style('stroke-width', null) // Reset stroke width to default
+          .style('stroke', null)
+          .style('stroke-width', null);
 
       // Apply a stroke to the searched country for highlighting
       d3.select('#map').selectAll('path')
-        .filter(d => d.properties.name === countryName)
-        .style('stroke', 'blue') // Use a noticeable color for the stroke
-        .style('stroke-width', 3); // Adjust the stroke width for visibility
-   }
+          .filter(d => d.properties.name.toLowerCase() === searchNameLower)
+          .style('stroke', 'blue') // Highlight color
+          .style('stroke-width', 2); // Highlight width
+    }
 
    function selectCountry(country) {
     searchCountry = country; // Update the search input with the selected country
     countrySuggestions = []; // Clear suggestions
+    }
+
+    function resetSearch() {
+      searchCountry = '';
+      searchYear = '';
+      searchResult = '';
+      countrySuggestions = []; // Clear country suggestions
+
+      // Optionally reset the year to its initial value or a default value
+      year = minYear; // Assuming you want to revert to the initial state
+
+      // Clear any highlights from the map
+      d3.select('#map').selectAll('path')
+        .style('stroke', null)
+        .style('stroke-width', null);
+
+      // Redraw the map if necessary to remove any highlights
+      drawMap();
     }
   </script>
   
@@ -225,7 +251,7 @@
     }
     #map {
       width: 80%; /* Adjust the width as needed */
-      height: 700px; /* Adjust the height as needed */
+      min-height: 700px; /* Adjust the height as needed */
       margin: 0 auto; /* This centers the map horizontally */
       display: block; /* Ensures the map is treated as a block-level element, which respects margin auto for centering */
       position: relative;
@@ -256,7 +282,7 @@
       margin-top: 5px;
     }
     .search-container {
-      text-align: left; /* Ensures the search bar itself is aligned left, if not already */
+      position: relative; /* Ensure the parent is positioned */
     }
     .search-results {
       margin-top: 20px;
@@ -266,15 +292,12 @@
       color: #333;
     }
     .autocomplete-suggestions {
-    /* Style for autocomplete suggestions */
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-    position: absolute;
-    background-color: white;
-    border: 1px solid #ddd;
-    z-index: 100;
-  }
+      position: absolute;
+      top: 100%; /* Position directly below the input field */
+      left: 0;
+      width: 100%; /* Match the width of the search container or input field */
+      /* Other styling remains unchanged */
+    }
   .autocomplete-suggestions li {
     padding: 5px;
     cursor: pointer;
@@ -289,6 +312,7 @@
   <input type="text" placeholder="Country" bind:value={searchCountry}>
   <input type="number" placeholder="Year" bind:value={searchYear} min="1965" max="2021">
   <button on:click={searchData}>Search</button>
+  <button on:click={resetSearch}>Reset</button> <!-- Add this line for the Reset button -->
   {#if countrySuggestions.length > 0}
     <ul class="autocomplete-suggestions">
       {#each countrySuggestions as suggestion}
