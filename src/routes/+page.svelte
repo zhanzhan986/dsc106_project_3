@@ -62,7 +62,7 @@
     const logDomain = d3.extent(energyData, d => Math.log(d.primary_energy_consumption + 1));
     colorScale.domain(logDomain);
 
-    const baseURL = location.hostname === 'localhost' ? '' : '/dsc106_project_3_draft';
+    const baseURL = location.hostname === 'localhost' ? '' : '/dsc106_project_3';
 
     const mapRes = await fetch(`${baseURL}/world.geojson`);
     mapData = await mapRes.json();
@@ -268,7 +268,7 @@
   }
   :global(html) {
     height: 100%; /* Ensure the root element fills the entire viewport */
-    background-image: url('/dsc106_project_3_draft/background3.jpg'); /* Relative path to your image */
+    background-image: url('/dsc106_project_3/background3.jpg'); /* Relative path to your image */
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
