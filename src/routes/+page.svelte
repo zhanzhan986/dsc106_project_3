@@ -2,11 +2,13 @@
     import { onMount } from 'svelte';
     import * as d3 from 'd3';
     import { geoNaturalEarth1, geoPath } from 'd3-geo';
-  
+
     let energyData = [], mapData;
     let year, minYear, maxYear;
     const colorScale = d3.scaleSequential().interpolator(d3.interpolateRgb("#f0ee99", "#eb4034"));
     let tooltipContent = '', tooltipX = 0, tooltipY = 0, showTooltip = false;
+    let searchCountry = '', searchYear = ''; // Variables for search inputs
+    let searchResult = ''; // For displaying search results on the page
     
     const renameMap = {
         // Example: 'CSV Name': 'GeoJSON Name',
@@ -149,12 +151,32 @@
       year = newYear;
       drawMap(); // Redraw map with the newly selected year's data
     }
+
+    function searchData() {
+      if (!searchCountry || !searchYear) {
+        searchResult = 'Please enter both country and year.';
+        return;
+      }
+
+      const filteredData = energyData.filter(d => d.country === searchCountry && d.year === parseInt(searchYear, 10));
+      if (filteredData.length > 0) {
+        const dataForCountryYear = filteredData[0]; // Assuming unique country-year pairs
+        searchResult = `${searchCountry} in ${searchYear}: ${dataForCountryYear.primary_energy_consumption} Terawatt-Hours`;
+      } else {
+        searchResult = `${searchCountry} in ${searchYear}: No data`;
+      }
+    }
   </script>
   
   <style>
+    h1 {
+    text-align: center; /* Centers the title text */
+    }
     #map {
-      width: 100%;
-      height: 600px;
+      width: 80%; /* Adjust the width as needed */
+      height: 700px; /* Adjust the height as needed */
+      margin: 0 auto; /* This centers the map horizontally */
+      display: block; /* Ensures the map is treated as a block-level element, which respects margin auto for centering */
       position: relative;
     }
     .tooltip {
@@ -173,24 +195,41 @@
       opacity: 1;
     }
     .slider-container {
-      position: absolute;
-      top: 0;
-      right: 20px;
-      width: 200px;
-    }
+        position: absolute;
+        top: 50px;
+        right: 20px;
+        width: 400px;
+      }
     .year-display {
-      text-align: center;
+      text-align: justify;
       margin-top: 5px;
     }
-  </style>
+    .search-container {
+      text-align: left; /* Ensures the search bar itself is aligned left, if not already */
+    }
+    .search-results {
+      margin-top: 20px;
+      text-align: left; /* Aligns the text of the search results to the left */
+      padding-left: 20px; /* Adds some padding to align with the search bar, adjust as needed */
+      font-size: 16px;
+      color: #333;
+    }
+</style>
   
-  <h1>World Primary Energy Consumption by Year</h1>
-  <svg id="map"></svg>
-  <div class="slider-container">
-    <input type="range" min={minYear} max={maxYear} value={year} class="slider" on:input="{e => updateYear(+e.target.value)}">
-    <div class="year-display">Year: {year}</div> <!-- Display the current year here -->
-  </div>
-  <!-- Tooltip element -->
-  <div class="tooltip" style="top: {tooltipY}px; left: {tooltipX}px;" class:show="{showTooltip}">
-    {tooltipContent}
-  </div>
+<h1>World Primary Energy Consumption by Year</h1>
+<div class="search-container">
+  <input type="text" placeholder="Country" bind:value={searchCountry}>
+  <input type="number" placeholder="Year" bind:value={searchYear} min={minYear} max={maxYear}>
+  <button on:click={searchData}>Search</button>
+</div>
+<!-- Search results are now directly under the search bar -->
+<div class="search-results">{searchResult}</div>
+
+<svg id="map"></svg>
+<div class="slider-container">
+  <input type="range" min={minYear} max={maxYear} value={year} class="slider" on:input="{e => updateYear(+e.target.value)}">
+  <div class="year-display">Year: {year}</div>
+</div>
+<div class="tooltip" style="top: {tooltipY}px; left: {tooltipX}px;" class:show="{showTooltip}">
+  {tooltipContent}
+</div>
