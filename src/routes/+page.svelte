@@ -264,6 +264,13 @@
   h1 {
   text-align: center; /* Centers the title text */
   }
+  :global(html) {
+    height: 100%; /* Ensure the root element fills the entire viewport */
+    background-image: url('background3.jpg'); /* Relative path to your image */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
   #map {
     width: 80%; /* Adjust the width as needed */
     min-height: 700px; /* Adjust the height as needed */
@@ -288,7 +295,7 @@
   }
   .slider-container {
       position: absolute;
-      top: 110px;
+      top: 90px;
       right: 20px;
       width: 400px;
     }
@@ -309,7 +316,6 @@
     color: #333;
   }
   .autocomplete-suggestions {
-    position: absolute;
     width: calc(100% - 80px); /* Set width relative to the country input field (adjust the value according to your layout) */
     background-color: #e7f0fa; /* Light blue background */
     border-radius: 5px; /* Rounded corners */
