@@ -266,10 +266,21 @@
   }
   :global(html) {
     height: 100%; /* Ensure the root element fills the entire viewport */
-    background-image: url('background3.jpg'); /* Relative path to your image */
+    background-image: url('/dsc106_project_3_draft/background3.jpg'); /* Relative path to your image */
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    position: relative; 
+  }
+  :global(html)::before {
+    content: ''; /* Required for a pseudo-element */
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(255, 255, 255, 0.3); /* Semi-transparent white overlay; adjust the alpha value as needed */
+    z-index: -1; /* Ensures the overlay is behind the content */
   }
   #map {
     width: 80%; /* Adjust the width as needed */
