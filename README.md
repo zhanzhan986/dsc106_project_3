@@ -1,34 +1,7 @@
-# create-svelte
+We selected data on global energy consumption and aimed to export the total energy consumption for all countries worldwide. Our goal was to create a comprehensive visualization that could analyze changes in energy consumption over time across all countries. To achieve this, we decided on a world map visualization, utilizing color variations to represent each country's data. However, during the data import, we encountered discrepancies in country names between our dataset and the world geographical map file. As a solution, we conducted data cleaning to standardize country names, ensuring alignment between the two.
 
-## Generate static site using svelte SSG
+Upon completion of data cleaning, we observed that color changes on the map were not sufficiently noticeable, primarily due to the vast range of consumption data. To address this issue, we implemented a logarithmic color encoding scheme to enhance the visibility of color changes on the map. To provide more detailed information, we incorporated tooltips for each country, displaying consumption data. Users can easily access this information by hovering over a specific country region with their mouse. Additionally, we introduced some user-friendly features—a timeline bar, a search bar for years and country—to allow users to select different years and countries for analysis. After using the input bar, the country the user enters will be highlighted on the map and the data on that year will show in a sentence which helps users to find the data they need without finding the country in the map. Also we can use reset to clean all the search information users enter if users want to do another search.
 
-To assist you in creating a static webpage for GitHub Pages using Svelte, we have developed a template for you: [ShaokangJiang/svelte-template (github.com)](https://github.com/ShaokangJiang/svelte-template).
+Our collaborative work was organized through Zoom meetings, where we brainstormed ideas, established a conceptual framework, and communicated effectively to devise the best approach for presenting our data. We all write our own code and choose the best one as our final project to present. The tasks were distributed among team members, with Haoyang doing the data cleaning and matching the country names between the geographical map file and data file, and also help to generate the color scales appear in the map; Steven wrote the best version of our project baseline and write the most parts of the code, so we made all changes based on his version; Jessie Zhang did the subsequent enhancements, such as coming up with adding timeline bars and tooltips and also writing the write-up and conclusion for the project. 
 
-Please follow the link provided, and initiate the creation of a new repository.
-
-![image-20240210175403813](./assets/image-20240210175403813.png)
-
-After GitHub completes the cloning process, navigate to the settings page. On the left panel, under the "Pages" tab, locate the "Source" section and select "GitHub Actions" as the source. 
-
-Clone this repository and proceed with your work. Upon completion, commit and push your changes. The corresponding GitHub Actions will then execute, building a static website hosted at `https://your-username.github.io/your-repo-name` for you.
-
-![image-20240210175104365](./assets/image-20240210175104365.png)
-
-### Migrate from your project
-
-If you have started on the project and want to switch to using this template, you can copy your `src` folder, go to the local clone of your version of this template, then paste it. When it says the file exists, simply click replace, and you can continue working on your version of this template.
-
-## Setup
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building static site
-
-Just push to github. 
+The collaborative effort was pivotal in successfully importing data into the visualization and designing dynamic color changes over time. It took us about 2 or 3 hours to get them done. It takes about 5 hours for each of us to finish this project since we did it together using zoom and update to each other if we make some changes or have some new ideas.
