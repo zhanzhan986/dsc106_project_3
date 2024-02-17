@@ -132,6 +132,7 @@
       .attr('x', legendPositionX)
       .attr('y', legendPositionY + legendHeight + 20) // Adjust position as needed
       .style('text-anchor', 'start') // Anchor text at start for left alignment
+      .style('fill', 'white') 
       .text('0'); // Minimum value
 
     // Add maximum value label at the right side of the legend
@@ -139,6 +140,7 @@
       .attr('x', legendPositionX + legendWidth)
       .attr('y', legendPositionY + legendHeight + 20) // Adjust position as needed
       .style('text-anchor', 'end') // Anchor text at end for right alignment
+      .style('fill', 'white') 
       .text('45,000 TWH'); // Maximum value
   }
 
