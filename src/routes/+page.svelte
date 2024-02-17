@@ -101,7 +101,7 @@
     const legendWidth = 400; // Adjust based on your needs
     const legendHeight = 20; // Adjust based on your needs
     const legendPositionX = (width - legendWidth) / 2; // Center horizontally
-    const legendPositionY = height - legendHeight - 10; // Position at the bottom with some padding
+    const legendPositionY = height - legendHeight - 100; // Position at the bottom with some padding
 
     // Sample gradient for the legend - replace with your color scale
     const gradient = svg.append('defs')
