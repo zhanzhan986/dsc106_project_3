@@ -346,7 +346,7 @@
   }
 </style>
 
-<h1>World Primary Energy Consumption by Year</h1>
+<h1>Primary Energy Consumptions in the World: Which countries are Consuming More?</h1>
 <div class="search-container">
   <input type="text" 
   placeholder="Country" 
