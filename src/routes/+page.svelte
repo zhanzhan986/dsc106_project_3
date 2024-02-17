@@ -132,7 +132,9 @@
          })
          .on('mousemove', (event, d) => {
            const countryData = yearData.find(cd => cd.country === d.properties.name);
-           tooltipContent = countryData ? `${d.properties.name}: ${countryData.primary_energy_consumption} Terawatt-Hours` : 'No data';
+           tooltipContent = countryData ?
+                     `${d.properties.name}: ${countryData.primary_energy_consumption} Terawatt-Hours` :
+                     `${d.properties.name}: No data`; // Include country name before "No data"
            tooltipX = event.pageX;
            tooltipY = event.pageY - 28; // Adjust Y position to avoid cursor overlap
            showTooltip = true;
