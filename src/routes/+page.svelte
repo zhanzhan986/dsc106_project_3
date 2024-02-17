@@ -288,7 +288,7 @@
   }
   .slider-container {
       position: absolute;
-      top: 50px;
+      top: 90px;
       right: 20px;
       width: 400px;
     }
