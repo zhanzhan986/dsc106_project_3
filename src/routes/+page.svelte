@@ -5,7 +5,7 @@
   
     let energyData = [], mapData;
     let year, minYear, maxYear;
-    const colorScale = d3.scaleSequential(d3.interpolateTurbo);
+    const colorScale = d3.scaleSequential().interpolator(d3.interpolateRgb("#f0ee99", "#eb4034"));
     let tooltipContent = '', tooltipX = 0, tooltipY = 0, showTooltip = false;
     
     const renameMap = {
@@ -61,7 +61,60 @@
   
       drawMap();
     });
-  
+
+    function drawLegend() {
+      const svg = d3.select('#map');
+      const margin = { top: 20, right: 20, bottom: 30, left: 20 };
+      const width = +svg.style('width').replace('px', '') - margin.left - margin.right;
+      const height = +svg.style('height').replace('px', '') - margin.top - margin.bottom;
+
+      // Define legend properties
+      const legendWidth = 400; // Adjust based on your needs
+      const legendHeight = 20; // Adjust based on your needs
+      const legendPositionX = (width - legendWidth) / 2; // Center horizontally
+      const legendPositionY = height - legendHeight - 10; // Position at the bottom with some padding
+
+      // Sample gradient for the legend - replace with your color scale
+      const gradient = svg.append('defs')
+        .append('linearGradient')
+        .attr('id', 'gradient')
+        .attr('x1', '0%')
+        .attr('x2', '100%')
+        .attr('y1', '0%')
+        .attr('y2', '0%');
+
+      gradient.append('stop')
+        .attr('offset', '0%')
+        .attr('stop-color', colorScale.range()[0]); // Starting color
+
+      gradient.append('stop')
+        .attr('offset', '100%')
+        .attr('stop-color', colorScale.range()[1]); // Ending color
+
+      // Draw the legend rectangle
+      svg.append('rect')
+        .attr('x', legendPositionX)
+        .attr('y', legendPositionY)
+        .attr('width', legendWidth)
+        .attr('height', legendHeight)
+        .style('fill', 'url(#gradient)');
+
+      svg.append('text')
+        .attr('x', legendPositionX)
+        .attr('y', legendPositionY + legendHeight + 20) // Adjust position as needed
+        .style('text-anchor', 'start') // Anchor text at start for left alignment
+        .text('0'); // Minimum value
+
+      // Add maximum value label at the right side of the legend
+      svg.append('text')
+        .attr('x', legendPositionX + legendWidth)
+        .attr('y', legendPositionY + legendHeight + 20) // Adjust position as needed
+        .style('text-anchor', 'end') // Anchor text at end for right alignment
+        .text('45,000 TWH'); // Maximum value
+    }
+
+
+
     function drawMap() {
       const svg = d3.select('#map').html('');
       const projection = geoNaturalEarth1();
@@ -87,6 +140,7 @@
          .on('mouseleave', () => {
            showTooltip = false;
          });
+      drawLegend();
     }
   
     function updateYear(newYear) {
@@ -98,7 +152,7 @@
   <style>
     #map {
       width: 100%;
-      height: 500px;
+      height: 600px;
       position: relative;
     }
     .tooltip {
