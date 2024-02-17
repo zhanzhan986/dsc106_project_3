@@ -1,4 +1,4 @@
-# Primary Energy Consumptions in the World: Which countries are Consuming More?
+# Primary Energy Consumptions in the World: Which Countries are Consuming More?
 
 We selected data on global energy consumption and aimed to export the total energy consumption for all countries worldwide. Our goal was to create a comprehensive visualization that could analyze changes in energy consumption over time across all countries. To achieve this, we decided on a world map visualization, utilizing color variations to represent each country's data. However, during the data import, we encountered discrepancies in country names between our dataset and the world geographical map file. As a solution, we conducted data cleaning to standardize country names, ensuring alignment between the two.
 
